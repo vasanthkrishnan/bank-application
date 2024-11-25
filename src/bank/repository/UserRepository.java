@@ -1,9 +1,9 @@
 package bank.repository;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import bank.entity.User;
@@ -22,6 +22,17 @@ public class UserRepository {
         users.add(user3);
     }
 
+    public Double checkBankBalance(String userID)
+    {
+        List<User> result = users.stream().filter(user -> user.getUsername().equals(userID)).collect(Collectors.toList());
+        if(!result.isEmpty())
+        {
+            return result.get(0).getAccountBalance();
+        } else {
+            return null;
+        }
+    }
+
     public User login(String username, String password) {
         List<User> finalList = users.stream().filter(user -> user.getUsername().equals(username) && user.getPassword().equals(password)).collect(Collectors.toList());
         if(!finalList.isEmpty()) {
@@ -34,6 +45,12 @@ public class UserRepository {
 
     public void printUsers() {
         System.out.println(users);
+    }
+
+    public boolean addNewCustomer(String username, String password, String contactNumber)
+    {
+        User user = new User(username, password, contactNumber, "user", 500.0);
+        return users.add(user);
     }
 
 }
