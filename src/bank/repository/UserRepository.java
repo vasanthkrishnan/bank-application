@@ -1,15 +1,19 @@
 package bank.repository;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import bank.entity.Transaction;
 import bank.entity.User;
 
 public class UserRepository {
 
     private static Set<User> users = new HashSet<>();
+    private static List<Transaction> transactions = new ArrayList<>();
     
     static {
         User user1 = new User("admin", "admin", "9638527415", "admin", 0.0);
@@ -23,30 +27,57 @@ public class UserRepository {
 
     public boolean transferAmount(String userId, String payeeUserId, Double amount) {
 
-        boolean isDebit = debit(userId, amount);
-        boolean isCredit = credit(payeeUserId, amount);
+        boolean isDebit = debit(userId, amount, payeeUserId);
+        boolean isCredit = credit(payeeUserId, amount, userId);
 
         return isDebit && isCredit;
     }
 
 
-    private boolean credit(String userId, Double amount) {
-        User user = getUser(userId);
+    private boolean credit(String payeeUserId, Double amount, String userId) {
+        User user = getUser(payeeUserId);
         Double accountBalance = user.getAccountBalance();
 
         users.remove(user);
         Double finalBalance = accountBalance + amount;
         user.setAccountBalance(finalBalance);
+
+        Transaction transaction = new Transaction(
+            LocalDate.now(), 
+            userId, 
+            amount, 
+            "Credit",
+            accountBalance, 
+            finalBalance,
+            payeeUserId);
+
+            System.out.println(transaction);
+
+            transactions.add(transaction);
+
         return users.add(user);
     }
 
-    private boolean debit(String userId, Double amount) {
+    private boolean debit(String userId, Double amount, String payeeUserId) {
         User user = getUser(userId);
         Double accountBalance = user.getAccountBalance();
-
         users.remove(user);
+
         Double finalBalance = accountBalance - amount;
         user.setAccountBalance(finalBalance);
+
+        Transaction transaction = new Transaction(
+            LocalDate.now(), 
+            payeeUserId, 
+            amount, 
+            "Debit",
+            accountBalance, 
+            finalBalance,
+            userId);
+
+            System.out.println(transaction);
+
+            transactions.add(transaction);
         return users.add(user);
     }
 
