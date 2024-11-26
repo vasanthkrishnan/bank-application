@@ -81,6 +81,23 @@ public class UserRepository {
         return users.add(user);
     }
 
+    public void printTransactions(String userId) {
+        List<Transaction> filteredTransactions = transactions.stream().filter(transaction -> transaction.getTransactionPerformedBy().equals(userId)).collect(Collectors.toList());
+
+        System.out.println("Date \t\t User Id \t Amount \t Type \t Initial Balance \t Final Balance");
+        System.out.println("--------------------------------------------------------------------------------------------------");
+        for(Transaction t : filteredTransactions) {
+            System.out.println(t.getTransactionDate()
+                + "\t" + t.getTransactionUserId()
+                + "\t\t" + t.getTransactionAmount()
+                + "\t\t" + t.getTransactionType()
+                + "\t\t" + t.getInitialBalance()
+                + "\t\t" + t.getFinlaBalance()
+            );
+        }
+        System.out.println("---------------------------------------------------------------------------------------------------");
+    }
+
 
     public User getUser(String userId) {
         List<User> result = users.stream().filter(user -> user.getUsername().equals(userId)).collect(Collectors.toList());

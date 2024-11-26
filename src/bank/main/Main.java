@@ -35,9 +35,13 @@ public class Main {
     }
     private void initAdmin() {
         boolean flag = true;
+        String userId;
+
         while (flag) {
             System.out.println("1. Exit/Logout");
             System.out.println("2. Add Customer");
+            System.out.println("3. Customer Transactions");
+            System.out.println("Check Bank Balance");
 
             int selectedOption = input.nextInt();
             switch (selectedOption) {
@@ -48,7 +52,17 @@ public class Main {
                 case 2:
                     main.addNewCustomer();
                     break;
-            
+                case 3:
+                    System.out.println("Enter user ID: ");
+                    userId = input.next();
+                    main.printTransactions(userId);
+                    break;
+                case 4:
+                    System.out.println("Enter user ID: ");
+                    userId = input.next();
+                    Double balance = main.checkBankBalance(userId);
+                    System.out.println("Bank Balance : " + balance);
+                    break;
                 default:
                     System.out.println("Default");
                     break;
@@ -83,6 +97,7 @@ public class Main {
             System.out.println("1. Exit/Logout");
             System.out.println("2. Check Bank Balance");
             System.out.println("3. Fund Transfer");
+            System.out.println("4. Transaction History");
 
             int selectedOption = input.nextInt();
 
@@ -102,11 +117,18 @@ public class Main {
                 case 3:
                     main.fundTransfer(user);
                     break;
+                case 4:
+                    main.printTransactions(user.getUsername());
+                    break;
                 default:
                     System.out.println("Default");
                     break;
             }
         }
+    }
+
+    private void printTransactions(String userId) {
+        userService.printTransactions(userId);
     }
 
     private void fundTransfer(User userDetails) {
