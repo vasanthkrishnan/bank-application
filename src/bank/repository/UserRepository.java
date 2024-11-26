@@ -3,7 +3,6 @@ package bank.repository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import bank.entity.User;
@@ -20,6 +19,45 @@ public class UserRepository {
         users.add(user1);
         users.add(user2);
         users.add(user3);
+    }
+
+    public boolean transferAmount(String userId, String payeeUserId, Double amount) {
+
+        boolean isDebit = debit(userId, amount);
+        boolean isCredit = credit(payeeUserId, amount);
+
+        return isDebit && isCredit;
+    }
+
+
+    private boolean credit(String userId, Double amount) {
+        User user = getUser(userId);
+        Double accountBalance = user.getAccountBalance();
+
+        users.remove(user);
+        Double finalBalance = accountBalance + amount;
+        user.setAccountBalance(finalBalance);
+        return users.add(user);
+    }
+
+    private boolean debit(String userId, Double amount) {
+        User user = getUser(userId);
+        Double accountBalance = user.getAccountBalance();
+
+        users.remove(user);
+        Double finalBalance = accountBalance - amount;
+        user.setAccountBalance(finalBalance);
+        return users.add(user);
+    }
+
+
+    public User getUser(String userId) {
+        List<User> result = users.stream().filter(user -> user.getUsername().equals(userId)).collect(Collectors.toList());
+        if(!result.isEmpty()) {
+            return result.get(0);
+        } else {
+            return null;
+        }
     }
 
     public Double checkBankBalance(String userID)
