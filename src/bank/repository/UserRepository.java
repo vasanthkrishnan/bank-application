@@ -2,8 +2,10 @@ package bank.repository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +16,7 @@ public class UserRepository {
 
     private static Set<User> users = new HashSet<>();
     private static List<Transaction> transactions = new ArrayList<>();
+    Map<String, Boolean> chequeBookRequest = new HashMap<>();
     
     static {
         User user1 = new User("admin", "admin", "9638527415", "admin", 0.0);
@@ -23,6 +26,15 @@ public class UserRepository {
         users.add(user1);
         users.add(user2);
         users.add(user3);
+    }
+
+    public Map<String, Boolean> getAllChequeBookRequest() {
+        return chequeBookRequest;
+    }
+
+
+    public void raiseChequeBookRequest(String userId) {
+        chequeBookRequest.put(userId, false);
     }
 
     public boolean transferAmount(String userId, String payeeUserId, Double amount) {

@@ -1,5 +1,6 @@
 package bank.main;
 
+import java.util.Map;
 import java.util.Scanner;
 
 import bank.entity.User;
@@ -98,6 +99,7 @@ public class Main {
             System.out.println("2. Check Bank Balance");
             System.out.println("3. Fund Transfer");
             System.out.println("4. Transaction History");
+            System.out.println("5. Raise Cheque Book Request");
 
             int selectedOption = input.nextInt();
 
@@ -120,12 +122,32 @@ public class Main {
                 case 4:
                     main.printTransactions(user.getUsername());
                     break;
+                case 5:
+                    String userId = user.getUsername();
+                    Map<String, Boolean> map = main.getAllChequeBookRequest();
+                    if(map.containsKey(userId) && map.get(userId)) {
+                        System.out.println("You have already raised a request and it is already approved");
+                    } else if(map.containsKey(userId) && !map.get(userId)) {
+                        System.out.println("You have already raised a request and it is pending for approval");
+                    } else {
+                        raiseChequeBookRequest(userId);
+                        System.out.println("Request raised successfully...");
+                    }
+                    break;
                 default:
                     System.out.println("Default");
                     break;
             }
         }
     }
+
+    private  Map<String, Boolean> getAllChequeBookRequest() {
+        return userService.getAllChequeBookRequest();
+    }
+    private void raiseChequeBookRequest(String userId) {
+        userService.raiseChequeBookRequest(userId);
+    }
+
 
     private void printTransactions(String userId) {
         userService.printTransactions(userId);
